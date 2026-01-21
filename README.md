@@ -28,7 +28,6 @@ This is **NOT** another Android UI tutorial. This is about:
 - ✅ **Concurrent Systems** — Thread-safe collections, avoiding locks when possible
 - ✅ **Clean Architecture** — SOLID principles, separation of concerns
 - ✅ **Enterprise Patterns** — Design patterns used in production systems
-- ✅ **Interview Preparation** — Built for companies like **Nubank**, **Mercado Libre**, **Stone**
 
 ---
 
