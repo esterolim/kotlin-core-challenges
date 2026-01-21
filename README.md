@@ -338,8 +338,6 @@ InMemoryCacheTest
 
 ## 📚 What's Appreciated in This Solution
 
-### ✅ For Nubank / Senior Interviews
-
 1. **Sealed classes for domain modeling**
     - Type-safe, exhaustive checking
     - Better than exceptions for control flow
@@ -383,23 +381,6 @@ InMemoryCacheTest
 ❌ Global mutable state
 
 ---
-
-## 🎯 Interview Talking Points
-
-### "Why sealed class instead of enum?"
-
-```kotlin
-// Enum can't attach different data per case
-enum class CacheResult { HIT, MISS, EXPIRED }  // How to store value in HIT?
-
-// Sealed class can
-sealed class CacheResult<out V> {
-    data class Hit<V>(val value: V) : CacheResult<V>()
-    data object Miss : CacheResult<Nothing>()
-    data object Expired : CacheResult<Nothing>()
-}
-```
-
 ### "Why ConcurrentHashMap not HashMap + synchronized?"
 
 Because `ConcurrentHashMap` uses **lock striping** — only the affected bucket is locked, allowing
