@@ -1,18 +1,20 @@
 # 🚀 Kotlin Core Challenges
 
-> A **production-ready** demonstration of mid to senior-level Kotlin expertise, following Google Developers best practices, Clean Code principles, and SOLID design patterns.
+> A **production-ready** demonstration of mid to senior-level Kotlin expertise, following Google
+> Developers best practices, Clean Code principles, and SOLID design patterns.
 
 ---
 
 ## 📋 Overview
 
-This repository showcases **idiomatic Kotlin solutions** to real-world challenges. Each solution emphasizes:
+This repository showcases **idiomatic Kotlin solutions** to real-world challenges. Each solution
+emphasizes:
 
 ✨ **Immutability** — Preferring `val` over `var`  
 🔒 **Thread Safety** — Concurrent-safe data structures without unnecessary locks  
 🎯 **Type Safety** — Sealed classes, exhaustive `when` expressions  
 📝 **Clean Code** — Self-documenting, minimal, and focused functions  
-🧪 **Testability** — Comprehensive tests with edge cases and concurrency scenarios  
+🧪 **Testability** — Comprehensive tests with edge cases and concurrency scenarios
 
 ---
 
@@ -20,7 +22,8 @@ This repository showcases **idiomatic Kotlin solutions** to real-world challenge
 
 This is **NOT** another Android UI tutorial. This is about:
 
-- ✅ **Kotlin Language Mastery** — Sealed classes, data classes, inline functions, extension functions
+- ✅ **Kotlin Language Mastery** — Sealed classes, data classes, inline functions, extension
+  functions
 - ✅ **Functional Programming** — Immutability, pure functions, lazy evaluation
 - ✅ **Concurrent Systems** — Thread-safe collections, avoiding locks when possible
 - ✅ **Clean Architecture** — SOLID principles, separation of concerns
@@ -36,15 +39,14 @@ kotlin-core-challenges/
 ├── src/main/kotlin/challenges/
 │   └── cache/
 │       ├── Solution.kt           # Main implementation
-│       ├── README.md             # Problem & approach
 │       └── tests/
 │           └── InMemoryCacheTest.kt
 ├── build.gradle.kts              # Gradle configuration
-├── BEST_PRACTICES.md             # Detailed practices guide
-└── INTERVIEW_GUIDE.md            # Interview preparation
+└── README            # Problem & approach
 ```
 
 Each challenge lives in its own package with:
+
 - 📄 **README.md** — Problem description, design decisions, trade-offs
 - 📝 **Solution.kt** — Clean implementation with KDoc
 - 🧪 **Test.kt** — Comprehensive unit tests (JUnit 5)
@@ -58,6 +60,7 @@ Each challenge lives in its own package with:
 Implement a **generic, thread-safe, in-memory cache** with TTL (Time-To-Live) support.
 
 **Requirements:**
+
 - ✅ Generic cache: `Cache<K, V>`
 - ✅ Optional TTL support per entry
 - ✅ Expired values should not be returned
@@ -68,6 +71,7 @@ Implement a **generic, thread-safe, in-memory cache** with TTL (Time-To-Live) su
 ### Why This Challenge?
 
 This challenge tests:
+
 1. **Generic type system** — Understanding covariance/contravariance
 2. **Concurrent programming** — ConcurrentHashMap vs synchronized
 3. **Functional design** — Sealed classes, when expressions
@@ -89,6 +93,7 @@ sealed class CacheResult<out V> {
 ```
 
 **Why?**
+
 - ✅ **Type-safe**: Compiler enforces exhaustive checking with `when`
 - ✅ **Distinguishes cases**: Differentiates between missing vs expired
 - ✅ **Covariant**: `CacheResult<Dog>` safely becomes `CacheResult<Animal>`
@@ -112,6 +117,7 @@ data class CacheEntry<V>(
 ```
 
 **Why?**
+
 - ✅ **Lock-free reads**: Immutable objects are inherently thread-safe
 - ✅ **GC-friendly**: Immutable objects can be optimized
 - ✅ **Predictable**: No surprises from concurrent mutations
@@ -123,11 +129,13 @@ private val storage = ConcurrentHashMap<K, CacheEntry<V>>()
 ```
 
 **Why?**
+
 - ✅ **Lock striping**: Each bucket has its own lock, not the entire map
 - ✅ **Read-heavy**: Multiple threads can read simultaneously
 - ✅ **Better performance**: Fine-grained concurrency vs global locks
 
 **Benchmark impact:**
+
 - ❌ `synchronized(map) { get(key) }` — Blocks all operations while locked
 - ✅ `ConcurrentHashMap.get(key)` — Only blocks the specific bucket
 
@@ -155,11 +163,13 @@ fun cleanup(): Int {
 ```
 
 **Why?**
+
 - ✅ **Fast reads**: O(1) without additional I/O
 - ✅ **Asymmetric operations**: `get()` observes state, doesn't modify it
 - ✅ **Explicit control**: Application decides when to clean up
 
 **Alternative (Auto-remove):**
+
 ```kotlin
 fun get(key: K): V? {
     val entry = storage[key] ?: return null
@@ -186,6 +196,7 @@ fun <K, V> InMemoryCache<K, V>.getOrPut(
 ```
 
 **Why?**
+
 - ✅ **Separation of concerns**: Core cache stays focused
 - ✅ **Kotlin idiom**: Extension functions extend without modifying
 - ✅ **Lazy computation**: Only computes on cache miss
@@ -195,17 +206,17 @@ fun <K, V> InMemoryCache<K, V>.getOrPut(
 
 ## 🚀 API Reference
 
-| Method | Returns | Purpose |
-|--------|---------|---------|
-| `put(key, value, ttl?)` | `Unit` | Store value with optional TTL |
-| `get(key)` | `CacheResult<V>` | Retrieve with exhaustive result |
-| `getOrNull(key)` | `V?` | Retrieve or null (ignores Miss vs Expired) |
-| `getOrElse(key, default)` | `V` | Retrieve or compute default |
-| `remove(key)` | `V?` | Remove and return value |
-| `cleanup()` | `Int` | Remove expired entries, return count |
-| `clear()` | `Unit` | Remove all entries |
-| `size()` | `Int` | Entry count (includes expired until cleanup) |
-| `getOrPut(key, ttl?, compute)` | `V` | Get or compute and cache |
+| Method                         | Returns          | Purpose                                      |
+|--------------------------------|------------------|----------------------------------------------|
+| `put(key, value, ttl?)`        | `Unit`           | Store value with optional TTL                |
+| `get(key)`                     | `CacheResult<V>` | Retrieve with exhaustive result              |
+| `getOrNull(key)`               | `V?`             | Retrieve or null (ignores Miss vs Expired)   |
+| `getOrElse(key, default)`      | `V`              | Retrieve or compute default                  |
+| `remove(key)`                  | `V?`             | Remove and return value                      |
+| `cleanup()`                    | `Int`            | Remove expired entries, return count         |
+| `clear()`                      | `Unit`           | Remove all entries                           |
+| `size()`                       | `Int`            | Entry count (includes expired until cleanup) |
+| `getOrPut(key, ttl?, compute)` | `V`              | Get or compute and cache                     |
 
 ### Usage Example
 
@@ -241,15 +252,16 @@ logger.info("Removed $removed expired entries")
 
 ## 📊 Performance Analysis
 
-| Operation | Time | Space | Notes |
-|-----------|------|-------|-------|
-| `put` | **O(1)** | O(1) | HashMap insertion |
-| `get` | **O(1)** | O(1) | HashMap lookup, no removal |
-| `remove` | **O(1)** | O(-1) | Deletion |
-| `cleanup` | **O(n)** | O(1) | n = all entries, called explicitly |
-| `size` | **O(1)** | O(1) | ConcurrentHashMap delegation |
+| Operation | Time     | Space | Notes                              |
+|-----------|----------|-------|------------------------------------|
+| `put`     | **O(1)** | O(1)  | HashMap insertion                  |
+| `get`     | **O(1)** | O(1)  | HashMap lookup, no removal         |
+| `remove`  | **O(1)** | O(-1) | Deletion                           |
+| `cleanup` | **O(n)** | O(1)  | n = all entries, called explicitly |
+| `size`    | **O(1)** | O(1)  | ConcurrentHashMap delegation       |
 
-**Note**: O(1) is *average case*. Worst case is O(n) with hash collisions, but extremely rare with modern hash functions.
+**Note**: O(1) is *average case*. Worst case is O(n) with hash collisions, but extremely rare with
+modern hash functions.
 
 ---
 
@@ -258,9 +270,10 @@ logger.info("Removed $removed expired entries")
 ✅ **Concurrent reads** — Multiple threads read simultaneously without locks  
 ✅ **Concurrent writes to different keys** — Each bucket has independent lock  
 ✅ **Atomic operations** — `put`, `get`, `remove` are indivisible  
-✅ **Visibility** — Changes are immediately visible to other threads  
+✅ **Visibility** — Changes are immediately visible to other threads
 
 **Implementation:**
+
 ```kotlin
 // ConcurrentHashMap uses:
 // 1. Lock striping: Only one bucket locked at a time
@@ -269,6 +282,7 @@ logger.info("Removed $removed expired entries")
 ```
 
 **Concurrency test:**
+
 ```kotlin
 @Test
 fun handleConcurrentReadsAndWrites() {
@@ -314,6 +328,7 @@ InMemoryCacheTest
 ```
 
 **Test patterns:**
+
 - 🟢 **Happy paths** — Basic functionality
 - 🟡 **Edge cases** — Null values, complex types, very short TTLs
 - 🔴 **Failure scenarios** — Expired entries, missing keys
@@ -327,37 +342,37 @@ InMemoryCacheTest
 ### ✅ For Nubank / Senior Interviews
 
 1. **Sealed classes for domain modeling**
-   - Type-safe, exhaustive checking
-   - Better than exceptions for control flow
+    - Type-safe, exhaustive checking
+    - Better than exceptions for control flow
 
 2. **Immutability + functional style**
-   - Reduces bugs
-   - Enables fearless concurrency
-   - Better for testing
+    - Reduces bugs
+    - Enables fearless concurrency
+    - Better for testing
 
 3. **Proper abstractions**
-   - `CacheEntry` hides expiration logic
-   - `CacheResult` makes states explicit
+    - `CacheEntry` hides expiration logic
+    - `CacheResult` makes states explicit
 
 4. **Extension functions**
-   - `getOrPut` separates concerns
-   - Idiomatically Kotlin
-   - Composable
+    - `getOrPut` separates concerns
+    - Idiomatically Kotlin
+    - Composable
 
 5. **Comprehensive documentation**
-   - KDoc explains "why", not just "what"
-   - Includes trade-offs and alternatives
-   - Shows architectural thinking
+    - KDoc explains "why", not just "what"
+    - Includes trade-offs and alternatives
+    - Shows architectural thinking
 
 6. **Production mindset**
-   - ConcurrentHashMap over synchronized
-   - Lazy cleanup, not eager
-   - Thread safety without raw locks
+    - ConcurrentHashMap over synchronized
+    - Lazy cleanup, not eager
+    - Thread safety without raw locks
 
 7. **Testing discipline**
-   - Concurrency tests
-   - Edge cases
-   - Clear test structure
+    - Concurrency tests
+    - Edge cases
+    - Clear test structure
 
 ### ❌ What's Avoided
 
@@ -366,13 +381,14 @@ InMemoryCacheTest
 ❌ `synchronized` blocks on entire map  
 ❌ Mutable cache entries  
 ❌ Auto-removal on access  
-❌ Global mutable state  
+❌ Global mutable state
 
 ---
 
 ## 🎯 Interview Talking Points
 
 ### "Why sealed class instead of enum?"
+
 ```kotlin
 // Enum can't attach different data per case
 enum class CacheResult { HIT, MISS, EXPIRED }  // How to store value in HIT?
@@ -386,7 +402,9 @@ sealed class CacheResult<out V> {
 ```
 
 ### "Why ConcurrentHashMap not HashMap + synchronized?"
-Because `ConcurrentHashMap` uses **lock striping** — only the affected bucket is locked, allowing multiple threads to write to different buckets simultaneously.
+
+Because `ConcurrentHashMap` uses **lock striping** — only the affected bucket is locked, allowing
+multiple threads to write to different buckets simultaneously.
 
 ```kotlin
 // ❌ Blocks entire map
@@ -397,7 +415,9 @@ concurrentMap.get(key)
 ```
 
 ### "Why lazy expiration not auto-remove?"
-Because reading shouldn't have side effects (remove I/O). Explicit cleanup allows the application to decide *when* to run this O(n) operation.
+
+Because reading shouldn't have side effects (remove I/O). Explicit cleanup allows the application to
+decide *when* to run this O(n) operation.
 
 ---
 
@@ -427,17 +447,18 @@ Ideas to expand this challenge:
 
 - 📘 [Effective Kotlin](https://kotlinlang.org/docs/idioms.html) — Language best practices
 - 📘 [Google Kotlin Style Guide](https://android.github.io/kotlin-guidelines/) — Naming, formatting
-- 📘 [Clean Code](https://www.oreilly.com/library/view/clean-code-a/9780136083238/) — Principles applied
+- 📘 [Clean Code](https://www.oreilly.com/library/view/clean-code-a/9780136083238/) — Principles
+  applied
 - 📘 [Java Concurrency in Practice](https://jcip.net/) — Concurrent collections
-- 🎥 [Kotlin Best Practices - Google Developers](https://www.youtube.com/playlist?list=PLQkwcJG4YTCSYJ13G82serFxWDnoPbn7p)
+-
+🎥 [Kotlin Best Practices - Google Developers](https://www.youtube.com/playlist?list=PLQkwcJG4YTCSYJ13G82serFxWDnoPbn7p)
 
 ---
 
 ## 📖 Documentation Files
 
-- **[BEST_PRACTICES.md](./BEST_PRACTICES.md)** — Detailed explanation of every best practice
-- **[INTERVIEW_GUIDE.md](./INTERVIEW_GUIDE.md)** — Common interview questions and answers
-- **[src/main/kotlin/challenges/cache/README.md](./src/main/kotlin/challenges/cache/README.md)** — Challenge-specific deep dive
+- **[src/main/kotlin/challenges/cache/README.md](./src/main/kotlin/challenges/cache/README.md)** —
+  Challenge-specific deep dive
 
 ---
 
@@ -469,6 +490,7 @@ This repository demonstrates:
 5. **Testing discipline** — Not just happy paths
 
 Use this as:
+
 - 📝 **Interview talking point** — "I built a production-ready cache..."
 - 🎯 **Learning reference** — Study the decisions
 - 🔍 **Code review template** — How to write clean Kotlin
